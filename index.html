@@ -1561,21 +1561,22 @@ document.getElementById('hamburger').addEventListener('click', () => {
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js"></script>
+
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyBsej9SceOJubAw-8zL4dFzKYR6hUtaMvE",
-  authDomain: "prithiksha-portfolio.firebaseapp.com",
-  projectId: "prithiksha-portfolio",
-  storageBucket: "prithiksha-portfolio.firebasestorage.app",
-  messagingSenderId: "511906483292",
-  appId: "1:511906483292:web:6a690456aff64b72dfaa99"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyBsej9SceOJubAw-8zL4dFzKYR6hUtaMvE",
+    authDomain: "prithiksha-portfolio.firebaseapp.com",
+    projectId: "prithiksha-portfolio",
+    storageBucket: "prithiksha-portfolio.firebasestorage.app",
+    messagingSenderId: "511906483292",
+    appId: "1:511906483292:web:6a690456aff64b72dfaa99"
+  };
 
-firebase.initializeApp(firebaseConfig);
+  firebase.initializeApp(firebaseConfig);
 
-const auth = firebase.auth();
-const db = firebase.firestore();
-const storage = firebase.storage();
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  const storage = firebase.storage();
 </script>
 </body>
 </html>
