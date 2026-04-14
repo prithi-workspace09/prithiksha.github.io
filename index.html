@@ -975,7 +975,67 @@ window.addEventListener('load', () => {
       });
 
   }, 1600);
+  db.collection("projects").onSnapshot((snapshot) => {
+  const container = document.getElementById("projectsGrid");
+  container.innerHTML = "";
+
+  snapshot.forEach((doc) => {
+    const p = doc.data();
+
+    const div = document.createElement("div");
+    div.className = "project-card";
+
+    div.innerHTML = `
+      <img src="${p.imageURL || ''}" class="project-thumb">
+      <div class="project-body">
+        <div class="project-title">${p.title}</div>
+        <div class="project-desc">${p.desc}</div>
+        <div class="project-tags">${p.tags}</div>
+        <div class="project-learned"><strong>What I Learned</strong>${p.learned}</div>
+        <div class="project-links">
+          <a href="${p.github}" target="_blank">GitHub</a>
+          <a href="${p.demo}" target="_blank">Live</a>
+          ${p.pdfURL ? `<a href="${p.pdfURL}" target="_blank">PDF</a>` : ""}
+        </div>
+        <button onclick="editProject('${doc.id}')">Edit</button>
+        <button onclick="deleteProject('${doc.id}')">Delete</button>
+      </div>
+    `;
+
+    container.appendChild(div);
+  });
 });
+function editProject(id) {
+  db.collection("projects").doc(id).get().then(doc => {
+    const p = doc.data();
+
+    openEditModal(`
+      <div class="modal-title">Edit Project</div>
+      <input class="form-input" id="edit_title" value="${p.title}">
+      <textarea class="form-input" id="edit_desc">${p.desc}</textarea>
+      <button onclick="updateProject('${id}')">Save</button>
+    `);
+  });
+}
+
+function updateProject(id) {
+  const title = document.getElementById('edit_title').value;
+  const desc = document.getElementById('edit_desc').value;
+
+  db.collection("projects").doc(id).update({
+    title, desc
+  }).then(() => {
+    closeEditModal();
+    showToast("Updated ✏️");
+  });
+}
+function deleteProject(id) {
+  db.collection("projects").doc(id).delete()
+    .then(() => {
+      showToast("Project deleted");
+      location.reload();
+    });
+}
 
 // ======= CURSOR =======
 const dot = document.getElementById('cursorDot');
@@ -1223,41 +1283,48 @@ function addProject() {
       <input class="form-input" id="pj_gh" placeholder="GitHub URL">
       <input class="form-input" id="pj_demo" placeholder="Live Demo URL">
       <input class="form-input" id="pj_emoji" placeholder="Icon emoji (e.g. 🚀)">
+      <input type="file" id="pj_image">
+      <input type="file" id="pj_pdf">
       <button class="btn-primary" onclick="applyAddProject()" style="justify-content:center">Add Project</button>
     </div>
   `);
 }
-function applyAddProject() {
+async function applyAddProject() {
   const title = document.getElementById('pj_title').value;
   const desc = document.getElementById('pj_desc').value;
-  const tagsRaw = document.getElementById('pj_tags').value;
+  const tags = document.getElementById('pj_tags').value;
   const learned = document.getElementById('pj_learned').value;
-  const gh = document.getElementById('pj_gh').value;
+  const github = document.getElementById('pj_gh').value;
   const demo = document.getElementById('pj_demo').value;
-  const emoji = document.getElementById('pj_emoji').value || '✨';
-  const tags = tagsRaw.split(',').map(t => `<span class="project-tag">${t.trim()}</span>`).join('');
-  const id = 'proj_' + Date.now();
-  const div = document.createElement('div');
-  div.className = 'project-card';
-  div.dataset.id = id;
-  div.innerHTML = `
-    <div class="project-thumb-placeholder">${emoji}</div>
-    <div class="project-body">
-      <div style="display:flex;justify-content:space-between;align-items:start">
-        <div class="project-title">${title}</div>
-        <button class="edit-btn" onclick="editProject(this.closest('.project-card'))">✏</button>
-      </div>
-      <div class="project-desc">${desc}</div>
-      <div class="project-tags">${tags}</div>
-      ${learned ? `<div class="project-learned"><strong>What I Learned</strong>${learned}</div>` : ''}
-      <div class="project-links">
-        ${gh ? `<a href="${gh}" class="project-link">⌥ GitHub</a>` : ''}
-        ${demo ? `<a href="${demo}" class="project-link">↗ Live Demo</a>` : ''}
-      </div>
-    </div>
-  `;
-  document.getElementById('projectsGrid').appendChild(div);
-  closeEditModal(); showToast('Project added!');
+  const emoji = document.getElementById('pj_emoji').value;
+
+  const imageFile = document.getElementById('pj_image').files[0];
+  const pdfFile = document.getElementById('pj_pdf').files[0];
+
+  let imageURL = "";
+  let pdfURL = "";
+
+  // Upload image
+  if (imageFile) {
+    const imgRef = storage.ref('images/' + Date.now() + imageFile.name);
+    await imgRef.put(imageFile);
+    imageURL = await imgRef.getDownloadURL();
+  }
+
+  // Upload PDF
+  if (pdfFile) {
+    const pdfRef = storage.ref('pdfs/' + Date.now() + pdfFile.name);
+    await pdfRef.put(pdfFile);
+    pdfURL = await pdfRef.getDownloadURL();
+  }
+
+  await db.collection("projects").add({
+    title, desc, tags, learned, github, demo, emoji,
+    imageURL, pdfURL
+  });
+
+  closeEditModal();
+  showToast("Project added 🚀");
 }
 function editProject(card) {
   const title = card.querySelector('.project-title').textContent;
@@ -1493,7 +1560,8 @@ document.getElementById('hamburger').addEventListener('click', () => {
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
-  <script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js"></script>
+<script>
 const firebaseConfig = {
   apiKey: "AIzaSyBsej9SceOJubAw-8zL4dFzKYR6hUtaMvE",
   authDomain: "prithiksha-portfolio.firebaseapp.com",
@@ -1507,6 +1575,7 @@ firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.firestore();
+const storage = firebase.storage();
 </script>
 </body>
 </html>
