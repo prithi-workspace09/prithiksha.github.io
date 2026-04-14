@@ -963,19 +963,19 @@ window.addEventListener('load', () => {
     initScrollAnimations();
 
     // ADD THIS PART (Firebase load)
-    db.collection("portfolio").doc("main").get()
-      .then(doc => {
-        if (doc.exists) {
-          const d = doc.data();
-          document.getElementById('heroName').textContent = d.name;
-          document.getElementById('heroBio').textContent = d.bio;
-          document.getElementById('aboutPara1').textContent = d.about1;
-          document.getElementById('aboutPara2').textContent = d.about2;
-        }
-      });
+    //db.collection("portfolio").doc("main").get()
+    //  .then(doc => {
+    //    if (doc.exists) {
+    //      const d = doc.data();
+    //      document.getElementById('heroName').textContent = d.name;
+    //      document.getElementById('heroBio').textContent = d.bio;
+    //      document.getElementById('aboutPara1').textContent = d.about1;
+    //      document.getElementById('aboutPara2').textContent = d.about2;
+    //    }
+    //  });
 
   }, 1600);
-  db.collection("projects").onSnapshot((snapshot) => {
+  //db.collection("projects").onSnapshot((snapshot) => {
   const container = document.getElementById("projectsGrid");
   container.innerHTML = "";
 
