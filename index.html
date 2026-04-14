@@ -957,8 +957,22 @@ window.addEventListener('load', () => {
     l.style.opacity = '0';
     l.style.transition = 'opacity 0.5s';
     setTimeout(() => l.style.display='none', 500);
+
     startTypewriter();
     initScrollAnimations();
+
+    // ADD THIS PART (Firebase load)
+    db.collection("portfolio").doc("main").get()
+      .then(doc => {
+        if (doc.exists) {
+          const d = doc.data();
+          document.getElementById('heroName').textContent = d.name;
+          document.getElementById('heroBio').textContent = d.bio;
+          document.getElementById('aboutPara1').textContent = d.about1;
+          document.getElementById('aboutPara2').textContent = d.about2;
+        }
+      });
+
   }, 1600);
 });
 
@@ -1022,18 +1036,18 @@ function closeLogin() {
 function attemptLogin() {
   const email = document.getElementById('adminEmail').value;
   const pass = document.getElementById('adminPass').value;
-  if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
-    isAdmin = true;
-    document.body.classList.add('admin-mode');
-    document.getElementById('adminBar').classList.remove('hidden');
-    document.querySelectorAll('.achievement-card .edit-btn, .hobby-card .edit-btn').forEach(b => b.style.display='inline-flex');
-    document.getElementById('uploadResumeBtn').style.display='block';
-    document.getElementById('addProjectBtn').style.display='block';
-    closeLogin();
-    showToast('Welcome back, Admin! ✦');
-  } else {
-    document.getElementById('loginError').style.display = 'block';
-  }
+
+  auth.signInWithEmailAndPassword(email, pass)
+    .then(() => {
+      isAdmin = true;
+      document.body.classList.add('admin-mode');
+      document.getElementById('adminBar').classList.remove('hidden');
+      closeLogin();
+      showToast('Logged in successfully');
+    })
+    .catch(() => {
+      document.getElementById('loginError').style.display = 'block';
+    });
 }
 function logoutAdmin() {
   isAdmin = false;
@@ -1045,7 +1059,15 @@ function logoutAdmin() {
 
 // ======= SAVE =======
 function saveChanges() {
-  showToast('✓ Changes saved successfully!');
+  const data = {
+    name: document.getElementById('heroName').textContent,
+    bio: document.getElementById('heroBio').textContent,
+    about1: document.getElementById('aboutPara1').textContent,
+    about2: document.getElementById('aboutPara2').textContent
+  };
+
+  db.collection("portfolio").doc("main").set(data)
+    .then(() => showToast("Saved successfully"));
 }
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -1467,6 +1489,23 @@ document.getElementById('hamburger').addEventListener('click', () => {
     links.style.cssText = 'display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:rgba(15,23,42,0.98);padding:1rem 2rem;gap:1rem;border-bottom:1px solid var(--glass-border);z-index:999';
   }
 });
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+  <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBsej9SceOJubAw-8zL4dFzKYR6hUtaMvE",
+  authDomain: "prithiksha-portfolio.firebaseapp.com",
+  projectId: "prithiksha-portfolio",
+  storageBucket: "prithiksha-portfolio.firebasestorage.app",
+  messagingSenderId: "511906483292",
+  appId: "1:511906483292:web:6a690456aff64b72dfaa99"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
 </script>
 </body>
 </html>
