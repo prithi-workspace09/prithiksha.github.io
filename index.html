@@ -386,7 +386,7 @@
 <body>
 
 <!-- LOADING -->
-<div id="loading" style="display:none;">
+<div id="loading">
   <div class="loading-logo">P.</div>
   <div class="loading-bar"><div class="loading-fill"></div></div>
 </div>
@@ -470,7 +470,7 @@
       </div>
       <div class="hero-avatar-wrap fade-in" style="transition-delay:0.2s">
         <div class="hero-avatar">
-          <img src="images/profile.jpg" alt="Profile" id="profileImg">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Prithiksha&backgroundColor=b6e3f4" alt="Profile" id="profileImg">
         </div>
         <div class="hero-badge">Open to Work ✦</div>
       </div>
@@ -858,9 +858,8 @@
       <h3 style="font-family:'Syne',sans-serif;font-size:1.3rem;margin-bottom:0.5rem">Prithiksha's Resume</h3>
       <p style="color:var(--text-muted);max-width:400px;margin:0 auto">Full-stack Developer & ML Enthusiast · B.Tech CSE · SRM IST · 2025</p>
       <div class="resume-btns">
-        <a href="resume.pdf" target="_blank" class="btn-primary" id="viewResumeBtn"> View Resume</a>
-        <a href="resume.pdf" download class="btn-outline" id="downloadResumeBtn">↓ Download PDF</a>
-        
+        <a href="#" class="btn-primary" id="viewResumeBtn">👁 View Resume</a>
+        <a href="#" class="btn-outline" id="downloadResumeBtn">↓ Download PDF</a>
       </div>
       <div style="margin-top:1.5rem">
         <label class="add-btn" style="display:none;cursor:pointer;max-width:300px;margin:0 auto" id="uploadResumeBtn">
@@ -953,7 +952,14 @@ let isAdmin = false;
 
 // ======= LOADING =======
 window.addEventListener('load', () => {
-  document.getElementById('loading').style.display = 'none';
+  setTimeout(() => {
+    const l = document.getElementById('loading');
+    l.style.opacity = '0';
+    l.style.transition = 'opacity 0.5s';
+    setTimeout(() => l.style.display='none', 500);
+    startTypewriter();
+    initScrollAnimations();
+  }, 1600);
 });
 
 // ======= CURSOR =======
@@ -1016,18 +1022,18 @@ function closeLogin() {
 function attemptLogin() {
   const email = document.getElementById('adminEmail').value;
   const pass = document.getElementById('adminPass').value;
-
-  auth.signInWithEmailAndPassword(email, pass)
-    .then(() => {
-      isAdmin = true;
-      document.body.classList.add('admin-mode');
-      document.getElementById('adminBar').classList.remove('hidden');
-      closeLogin();
-      showToast('Logged in successfully');
-    })
-    .catch(() => {
-      document.getElementById('loginError').style.display = 'block';
-    });
+  if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
+    isAdmin = true;
+    document.body.classList.add('admin-mode');
+    document.getElementById('adminBar').classList.remove('hidden');
+    document.querySelectorAll('.achievement-card .edit-btn, .hobby-card .edit-btn').forEach(b => b.style.display='inline-flex');
+    document.getElementById('uploadResumeBtn').style.display='block';
+    document.getElementById('addProjectBtn').style.display='block';
+    closeLogin();
+    showToast('Welcome back, Admin! ✦');
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
 }
 function logoutAdmin() {
   isAdmin = false;
@@ -1039,15 +1045,7 @@ function logoutAdmin() {
 
 // ======= SAVE =======
 function saveChanges() {
-  const data = {
-    name: document.getElementById('heroName').textContent,
-    bio: document.getElementById('heroBio').textContent,
-    about1: document.getElementById('aboutPara1').textContent,
-    about2: document.getElementById('aboutPara2').textContent
-  };
-
-  db.collection("portfolio").doc("main").set(data)
-    .then(() => showToast("Saved successfully"));
+  showToast('✓ Changes saved successfully!');
 }
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -1202,48 +1200,41 @@ function addProject() {
       <input class="form-input" id="pj_gh" placeholder="GitHub URL">
       <input class="form-input" id="pj_demo" placeholder="Live Demo URL">
       <input class="form-input" id="pj_emoji" placeholder="Icon emoji (e.g. 🚀)">
-      <input type="file" id="pj_image">
-      <input type="file" id="pj_pdf">
       <button class="btn-primary" onclick="applyAddProject()" style="justify-content:center">Add Project</button>
     </div>
   `);
 }
-async function applyAddProject() {
+function applyAddProject() {
   const title = document.getElementById('pj_title').value;
   const desc = document.getElementById('pj_desc').value;
-  const tags = document.getElementById('pj_tags').value;
+  const tagsRaw = document.getElementById('pj_tags').value;
   const learned = document.getElementById('pj_learned').value;
-  const github = document.getElementById('pj_gh').value;
+  const gh = document.getElementById('pj_gh').value;
   const demo = document.getElementById('pj_demo').value;
-  const emoji = document.getElementById('pj_emoji').value;
-
-  const imageFile = document.getElementById('pj_image').files[0];
-  const pdfFile = document.getElementById('pj_pdf').files[0];
-
-  let imageURL = "";
-  let pdfURL = "";
-
-  // Upload image
-  if (imageFile) {
-    const imgRef = storage.ref('images/' + Date.now() + imageFile.name);
-    await imgRef.put(imageFile);
-    imageURL = await imgRef.getDownloadURL();
-  }
-
-  // Upload PDF
-  if (pdfFile) {
-    const pdfRef = storage.ref('pdfs/' + Date.now() + pdfFile.name);
-    await pdfRef.put(pdfFile);
-    pdfURL = await pdfRef.getDownloadURL();
-  }
-
-  await db.collection("projects").add({
-    title, desc, tags, learned, github, demo, emoji,
-    imageURL, pdfURL
-  });
-
-  closeEditModal();
-  showToast("Project added 🚀");
+  const emoji = document.getElementById('pj_emoji').value || '✨';
+  const tags = tagsRaw.split(',').map(t => `<span class="project-tag">${t.trim()}</span>`).join('');
+  const id = 'proj_' + Date.now();
+  const div = document.createElement('div');
+  div.className = 'project-card';
+  div.dataset.id = id;
+  div.innerHTML = `
+    <div class="project-thumb-placeholder">${emoji}</div>
+    <div class="project-body">
+      <div style="display:flex;justify-content:space-between;align-items:start">
+        <div class="project-title">${title}</div>
+        <button class="edit-btn" onclick="editProject(this.closest('.project-card'))">✏</button>
+      </div>
+      <div class="project-desc">${desc}</div>
+      <div class="project-tags">${tags}</div>
+      ${learned ? `<div class="project-learned"><strong>What I Learned</strong>${learned}</div>` : ''}
+      <div class="project-links">
+        ${gh ? `<a href="${gh}" class="project-link">⌥ GitHub</a>` : ''}
+        ${demo ? `<a href="${demo}" class="project-link">↗ Live Demo</a>` : ''}
+      </div>
+    </div>
+  `;
+  document.getElementById('projectsGrid').appendChild(div);
+  closeEditModal(); showToast('Project added!');
 }
 function editProject(card) {
   const title = card.querySelector('.project-title').textContent;
@@ -1476,26 +1467,6 @@ document.getElementById('hamburger').addEventListener('click', () => {
     links.style.cssText = 'display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:rgba(15,23,42,0.98);padding:1rem 2rem;gap:1rem;border-bottom:1px solid var(--glass-border);z-index:999';
   }
 });
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js"></script>
-
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBsej9SceOJubAw-8zL4dFzKYR6hUtaMvE",
-    authDomain: "prithiksha-portfolio.firebaseapp.com",
-    projectId: "prithiksha-portfolio",
-    storageBucket: "prithiksha-portfolio.firebasestorage.app",
-    messagingSenderId: "511906483292",
-    appId: "1:511906483292:web:6a690456aff64b72dfaa99"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-  const storage = firebase.storage();
 </script>
 </body>
 </html>
