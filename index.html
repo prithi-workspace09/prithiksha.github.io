@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prithiksha — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --violet: #6C63FF;
+    --cyan: #22D3EE;
+    --bg-deep: #0F172A;
+    --bg-card: #1E293B;
+    --text: #E2E8F0;
+    --text-muted: #94A3B8;
+    --glass: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.08);
+    --glow-v: rgba(108,99,255,0.3);
+    --glow-c: rgba(34,211,238,0.2);
+  }
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: linear-gradient(135deg, var(--bg-deep) 0%, #1E293B 100%);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body.light-mode {
+    --bg-deep: #F0F4FF;
+    --bg-card: #FFFFFF;
+    --text: #1E293B;
+    --text-muted: #64748B;
+    --glass: rgba(0,0,0,0.03);
+    --glass-border: rgba(0,0,0,0.08);
+    background: linear-gradient(135deg, #F0F4FF 0%, #E8F0FE 100%);
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-deep); }
+  ::-webkit-scrollbar-thumb { background: var(--violet); border-radius: 3px; }
+
+  /* CURSOR */
+  .cursor { position: fixed; pointer-events:none; z-index:9999; }
+  .cursor-dot { width:8px;height:8px;background:var(--cyan);border-radius:50%;position:fixed;transform:translate(-50%,-50%);transition:all 0.08s; }
+  .cursor-ring { width:32px;height:32px;border:1px solid var(--violet);border-radius:50%;position:fixed;transform:translate(-50%,-50%);transition:all 0.18s cubic-bezier(.25,.46,.45,.94); }
+
+  /* NAV */
+  nav {
+    position: fixed; top:0; left:0; right:0; z-index: 1000;
+    padding: 1.1rem 2rem;
+    display: flex; align-items:center; justify-content:space-between;
+    background: rgba(15,23,42,0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    transition: all 0.3s;
+  }
+  .nav-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:1.3rem; background:linear-gradient(90deg,var(--violet),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent; }
+  .nav-links { display:flex; gap:2rem; list-style:none; }
+  .nav-links a { color:var(--text-muted); text-decoration:none; font-size:0.875rem; font-weight:500; letter-spacing:0.02em; transition:color 0.2s; }
+  .nav-links a:hover { color:var(--cyan); }
+  .nav-actions { display:flex;gap:1rem;align-items:center; }
+  .btn-theme { background:none;border:1px solid var(--glass-border);color:var(--text-muted);padding:0.4rem 0.8rem;border-radius:8px;cursor:pointer;font-size:0.8rem;transition:all 0.2s; }
+  .btn-theme:hover { border-color:var(--violet);color:var(--violet); }
+  .hamburger { display:none; background:none;border:none;cursor:pointer;flex-direction:column;gap:5px; }
+  .hamburger span { display:block;width:22px;height:2px;background:var(--text-muted);border-radius:2px;transition:all 0.3s; }
+
+  /* SECTIONS */
+  section { padding: 6rem 0; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+  .section-label { font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--cyan);font-weight:500;margin-bottom:0.75rem; }
+  .section-title { font-family:'Syne',sans-serif; font-size:clamp(2rem,4vw,3rem); font-weight:700; line-height:1.1; margin-bottom:1rem; }
+  .section-divider { width:60px;height:3px;background:linear-gradient(90deg,var(--violet),var(--cyan));border-radius:2px;margin-bottom:3rem; }
+
+  /* GLASS CARD */
+  .glass-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    transition: all 0.35s cubic-bezier(.25,.46,.45,.94);
+  }
+  .glass-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(108,99,255,0.3);
+    box-shadow: 0 20px 60px rgba(108,99,255,0.15), 0 0 0 1px rgba(108,99,255,0.1);
+  }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items:center;
+    padding: 8rem 0 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position:absolute;inset:0;pointer-events:none;
+  }
+  .hero-blob {
+    position:absolute;border-radius:50%;filter:blur(80px);opacity:0.15;
+    animation: blobFloat 8s ease-in-out infinite;
+  }
+  .blob1 { width:500px;height:500px;background:var(--violet);top:-100px;right:-100px; }
+  .blob2 { width:400px;height:400px;background:var(--cyan);bottom:-50px;left:-100px;animation-delay:3s; }
+  @keyframes blobFloat { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(20px,-20px) scale(1.05)} }
+  .hero-grid { display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center; }
+  .hero-avatar-wrap { position:relative; display:flex;justify-content:center; }
+  .hero-avatar {
+    width:280px;height:280px;border-radius:50%;
+    border: 2px solid rgba(108,99,255,0.4);
+    overflow:hidden;position:relative;
+    box-shadow: 0 0 60px rgba(108,99,255,0.3);
+    transition: all 0.4s;
+  }
+  .hero-avatar:hover { box-shadow:0 0 80px rgba(108,99,255,0.5),0 0 0 4px rgba(34,211,238,0.2); }
+  .hero-avatar img { width:100%;height:100%;object-fit:cover; }
+  .avatar-ring {
+    position:absolute;inset:-8px;border-radius:50%;
+    border:1px solid;border-image:linear-gradient(90deg,var(--violet),var(--cyan)) 1;
+    animation: spin 12s linear infinite;
+    border-radius:50%;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .hero-badge {
+    position:absolute;bottom:-10px;right:20px;
+    background:linear-gradient(135deg,var(--violet),var(--cyan));
+    color:white;padding:0.4rem 1rem;border-radius:20px;font-size:0.75rem;font-weight:600;
+    box-shadow:0 8px 20px rgba(108,99,255,0.4);
+  }
+  .hero-name {
+    font-family:'Syne',sans-serif;
+    font-size:clamp(2.5rem,5vw,4rem);
+    font-weight:800;line-height:1.05;
+    background:linear-gradient(135deg,var(--text) 40%,var(--violet));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    margin-bottom:1rem;
+    cursor:default;
+    transition:transform 0.3s cubic-bezier(.34,1.56,.64,1);
+  }
+  .hero-name:hover { transform:scale(1.03); }
+  .typewriter-wrap { min-height:2rem;margin-bottom:1.5rem; }
+  .typewriter { font-size:1.1rem;color:var(--cyan);font-weight:400; }
+  .cursor-blink { animation:blink 1s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .hero-bio { color:var(--text-muted);line-height:1.7;margin-bottom:2rem;max-width:480px; }
+  .btn-primary {
+    display:inline-flex;align-items:center;gap:0.5rem;
+    background:linear-gradient(135deg,var(--violet),var(--cyan));
+    color:white;padding:0.8rem 2rem;border-radius:12px;
+    text-decoration:none;font-weight:600;font-size:0.95rem;
+    border:none;cursor:pointer;
+    transition:all 0.3s cubic-bezier(.25,.46,.45,.94);
+    box-shadow:0 8px 24px rgba(108,99,255,0.35);
+  }
+  .btn-primary:hover { transform:translateY(-3px);box-shadow:0 12px 32px rgba(108,99,255,0.5); }
+  .btn-outline {
+    display:inline-flex;align-items:center;gap:0.5rem;
+    background:transparent;color:var(--text);
+    padding:0.8rem 2rem;border-radius:12px;
+    border:1px solid var(--glass-border);
+    text-decoration:none;font-weight:500;font-size:0.95rem;
+    cursor:pointer;transition:all 0.3s;
+  }
+  .btn-outline:hover { border-color:var(--violet);color:var(--violet);transform:translateY(-3px); }
+  .hero-btns { display:flex;gap:1rem;flex-wrap:wrap; }
+  .socials { display:flex;gap:1rem;margin-top:2rem; }
+  .social-icon {
+    width:44px;height:44px;border-radius:12px;
+    background:var(--glass);border:1px solid var(--glass-border);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--text-muted);text-decoration:none;font-size:1rem;
+    transition:all 0.3s;
+  }
+  .social-icon:hover { background:var(--violet);border-color:var(--violet);color:white;transform:translateY(-3px);box-shadow:0 8px 20px rgba(108,99,255,0.4); }
+  .scroll-indicator { position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:0.5rem;color:var(--text-muted);font-size:0.75rem; }
+  .scroll-dot { width:6px;height:6px;background:var(--violet);border-radius:50%;animation:scrollDot 2s ease-in-out infinite; }
+  @keyframes scrollDot { 0%,100%{transform:translateY(0);opacity:1} 50%{transform:translateY(8px);opacity:0.3} }
+
+  /* ABOUT */
+  .about-grid { display:grid;grid-template-columns:1.2fr 0.8fr;gap:3rem;align-items:start; }
+  .about-text p { color:var(--text-muted);line-height:1.8;margin-bottom:1rem; }
+  .skill-tags { display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:1.5rem; }
+  .tag {
+    background:var(--glass);border:1px solid var(--glass-border);
+    color:var(--text-muted);padding:0.35rem 0.9rem;border-radius:20px;
+    font-size:0.8rem;font-weight:500;transition:all 0.2s;cursor:default;
+  }
+  .tag:hover { border-color:var(--violet);color:var(--violet); }
+  .stat-grid { display:grid;grid-template-columns:1fr 1fr;gap:1rem; }
+  .stat-card { background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:1.5rem;text-align:center; }
+  .stat-num { font-family:'Syne',sans-serif;font-size:2rem;font-weight:700;background:linear-gradient(135deg,var(--violet),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent; }
+  .stat-label { font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem; }
+
+  /* TIMELINE */
+  .timeline { position:relative;padding-left:2rem; }
+  .timeline::before { content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--violet),var(--cyan)); }
+  .timeline-item { position:relative;margin-bottom:2rem;padding:1.5rem;background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;transition:all 0.3s; }
+  .timeline-item::before { content:'';position:absolute;left:-2.5rem;top:1.5rem;width:10px;height:10px;background:var(--violet);border-radius:50%;border:2px solid var(--bg-deep); }
+  .timeline-item:hover { border-color:rgba(108,99,255,0.3);transform:translateX(4px); }
+  .timeline-title { font-family:'Syne',sans-serif;font-weight:600;font-size:1rem;margin-bottom:0.25rem; }
+  .timeline-sub { font-size:0.85rem;color:var(--cyan);margin-bottom:0.25rem; }
+  .timeline-date { font-size:0.75rem;color:var(--text-muted);margin-bottom:0.75rem; }
+  .timeline-desc { font-size:0.875rem;color:var(--text-muted);line-height:1.7; }
+
+  /* PROJECTS */
+  .projects-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem; }
+  .project-card {
+    background:var(--glass);border:1px solid var(--glass-border);
+    border-radius:20px;overflow:hidden;
+    transition:all 0.35s cubic-bezier(.25,.46,.45,.94);
+    position:relative;
+  }
+  .project-card:hover { transform:translateY(-6px);border-color:rgba(108,99,255,0.3);box-shadow:0 24px 60px rgba(108,99,255,0.2),0 0 0 1px rgba(108,99,255,0.1); }
+  .project-thumb { width:100%;height:200px;object-fit:cover;background:linear-gradient(135deg,var(--bg-card),var(--bg-deep)); }
+  .project-thumb-placeholder { height:200px;background:linear-gradient(135deg,rgba(108,99,255,0.1),rgba(34,211,238,0.05));display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:2rem; }
+  .project-body { padding:1.5rem; }
+  .project-title { font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:600;margin-bottom:0.5rem; }
+  .project-desc { font-size:0.875rem;color:var(--text-muted);line-height:1.6;margin-bottom:1rem; }
+  .project-tags { display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1rem; }
+  .project-tag { background:rgba(108,99,255,0.12);border:1px solid rgba(108,99,255,0.2);color:var(--violet);padding:0.2rem 0.6rem;border-radius:8px;font-size:0.72rem;font-weight:500; }
+  .project-learned { background:rgba(34,211,238,0.05);border-left:2px solid var(--cyan);padding:0.75rem;border-radius:0 8px 8px 0;font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem; }
+  .project-learned strong { color:var(--cyan);display:block;margin-bottom:0.25rem; }
+  .project-links { display:flex;gap:0.75rem; }
+  .project-link { font-size:0.8rem;color:var(--violet);text-decoration:none;display:flex;align-items:center;gap:0.3rem;transition:color 0.2s; }
+  .project-link:hover { color:var(--cyan); }
+
+  /* ACHIEVEMENTS */
+  .achievements-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem; }
+  .achievement-card { background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:1.5rem;transition:all 0.3s; }
+  .achievement-card:hover { transform:translateY(-3px);border-color:rgba(34,211,238,0.3); }
+  .ach-icon { font-size:1.8rem;margin-bottom:0.75rem; }
+  .ach-title { font-weight:600;margin-bottom:0.25rem;font-size:0.95rem; }
+  .ach-issuer { font-size:0.8rem;color:var(--cyan);margin-bottom:0.25rem; }
+  .ach-date { font-size:0.75rem;color:var(--text-muted); }
+  .ach-link { display:inline-block;margin-top:0.75rem;font-size:0.78rem;color:var(--violet);text-decoration:none;transition:color 0.2s; }
+  .ach-link:hover { color:var(--cyan); }
+
+  /* HOBBIES */
+  .hobbies-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem; }
+  .hobby-card { background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:1.5rem;text-align:center;transition:all 0.3s; }
+  .hobby-card:hover { transform:translateY(-3px);border-color:rgba(108,99,255,0.3); }
+  .hobby-icon { font-size:2rem;margin-bottom:0.75rem; }
+  .hobby-title { font-weight:600;margin-bottom:0.25rem; }
+  .hobby-desc { font-size:0.8rem;color:var(--text-muted); }
+
+  /* SKILLS */
+  .skills-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem; }
+  .skill-cat { background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:1.5rem; }
+  .skill-cat-title { font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:600;margin-bottom:1rem;color:var(--cyan); }
+
+  /* RESUME */
+  .resume-box { background:var(--glass);border:1px solid var(--glass-border);border-radius:20px;padding:3rem;text-align:center; }
+  .resume-icon { font-size:3rem;margin-bottom:1rem; }
+  .resume-btns { display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2rem; }
+
+  /* CONTACT */
+  .contact-grid { display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start; }
+  .contact-info { display:flex;flex-direction:column;gap:1.25rem; }
+  .contact-item { display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;transition:all 0.3s; }
+  .contact-item:hover { border-color:rgba(108,99,255,0.3); }
+  .contact-icon { width:40px;height:40px;background:linear-gradient(135deg,var(--violet),var(--cyan));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0; }
+  .contact-label { font-size:0.75rem;color:var(--text-muted); }
+  .contact-val { font-weight:500;font-size:0.95rem; }
+  .contact-form { display:flex;flex-direction:column;gap:1rem; }
+  .form-input {
+    background:var(--glass);border:1px solid var(--glass-border);
+    color:var(--text);padding:0.85rem 1rem;border-radius:12px;
+    font-size:0.9rem;font-family:inherit;
+    outline:none;transition:border-color 0.2s;width:100%;
+  }
+  .form-input:focus { border-color:var(--violet); }
+  .form-input::placeholder { color:var(--text-muted); }
+  textarea.form-input { height:120px;resize:vertical; }
+
+  /* FOOTER */
+  footer { border-top:1px solid var(--glass-border);padding:2rem;text-align:center;color:var(--text-muted);font-size:0.85rem; }
+  .footer-admin-link { color:var(--text-muted);text-decoration:none;transition:color 0.2s;opacity:0.4; }
+  .footer-admin-link:hover { color:var(--violet);opacity:1; }
+
+  /* ADMIN LOGIN MODAL */
+  .modal-overlay {
+    position:fixed;inset:0;z-index:9000;
+    background:rgba(10,15,30,0.85);
+    backdrop-filter:blur(10px);
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;transition:opacity 0.3s;
+  }
+  .modal-overlay.active { opacity:1;pointer-events:all; }
+  .modal {
+    background:var(--bg-card);border:1px solid rgba(108,99,255,0.3);
+    border-radius:24px;padding:2.5rem;width:90%;max-width:420px;
+    transform:scale(0.9) translateY(20px);transition:all 0.3s cubic-bezier(.34,1.56,.64,1);
+    box-shadow:0 40px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(108,99,255,0.1);
+  }
+  .modal-overlay.active .modal { transform:scale(1) translateY(0); }
+  .modal-title { font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:0.5rem; }
+  .modal-sub { color:var(--text-muted);font-size:0.875rem;margin-bottom:2rem; }
+  .modal-close { position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.2rem;padding:0.5rem; }
+  .error-msg { color:#F87171;font-size:0.8rem;margin-top:0.5rem;display:none; }
+
+  /* ADMIN TOOLBAR */
+  .admin-bar {
+    position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);z-index:5000;
+    display:none;
+    background:rgba(15,23,42,0.95);border:1px solid rgba(108,99,255,0.3);
+    border-radius:100px;padding:0.75rem 1.5rem;
+    display:flex;gap:1rem;align-items:center;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 30px rgba(108,99,255,0.2);
+    backdrop-filter:blur(20px);
+  }
+  .admin-bar.hidden { display:none !important; }
+  .admin-label { font-size:0.75rem;color:var(--cyan);font-weight:600;letter-spacing:0.1em;text-transform:uppercase; }
+  .btn-save { background:linear-gradient(135deg,var(--violet),var(--cyan));color:white;border:none;padding:0.5rem 1.2rem;border-radius:100px;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s; }
+  .btn-save:hover { transform:scale(1.05);box-shadow:0 8px 20px rgba(108,99,255,0.4); }
+  .btn-logout { background:transparent;border:1px solid rgba(255,100,100,0.3);color:#F87171;padding:0.5rem 1rem;border-radius:100px;cursor:pointer;font-size:0.8rem;transition:all 0.2s; }
+  .btn-logout:hover { background:rgba(255,100,100,0.1); }
+
+  /* EDIT CONTROLS */
+  .edit-btn {
+    display:none;
+    background:rgba(108,99,255,0.15);border:1px solid rgba(108,99,255,0.3);
+    color:var(--violet);padding:0.25rem 0.6rem;border-radius:8px;
+    cursor:pointer;font-size:0.75rem;margin-left:0.5rem;
+    transition:all 0.2s;vertical-align:middle;
+  }
+  .edit-btn:hover { background:var(--violet);color:white; }
+  body.admin-mode .edit-btn { display:inline-flex;align-items:center;gap:0.25rem; }
+  .add-btn {
+    display:none;
+    background:rgba(34,211,238,0.1);border:1px dashed rgba(34,211,238,0.3);
+    color:var(--cyan);padding:0.6rem 1.2rem;border-radius:12px;
+    cursor:pointer;font-size:0.85rem;width:100%;text-align:center;
+    transition:all 0.2s;margin-top:1rem;
+  }
+  .add-btn:hover { background:rgba(34,211,238,0.15); }
+  body.admin-mode .add-btn { display:block; }
+  [contenteditable="true"] { outline:1px dashed rgba(108,99,255,0.4);border-radius:4px;padding:2px 4px;min-width:20px; }
+
+  /* TOAST */
+  .toast {
+    position:fixed;top:5rem;right:2rem;z-index:9999;
+    background:linear-gradient(135deg,var(--violet),var(--cyan));
+    color:white;padding:1rem 1.5rem;border-radius:14px;
+    font-weight:600;font-size:0.875rem;
+    transform:translateX(200%);transition:transform 0.4s cubic-bezier(.34,1.56,.64,1);
+    box-shadow:0 10px 30px rgba(108,99,255,0.4);
+  }
+  .toast.show { transform:translateX(0); }
+
+  /* FADE IN ANIMATION */
+  .fade-in { opacity:0;transform:translateY(24px);transition:all 0.6s cubic-bezier(.25,.46,.45,.94); }
+  .fade-in.visible { opacity:1;transform:translateY(0); }
+
+  /* LOADING */
+  #loading {
+    position:fixed;inset:0;z-index:99999;
+    background:var(--bg-deep);
+    display:flex;align-items:center;justify-content:center;
+    flex-direction:column;gap:1rem;
+  }
+  .loading-logo { font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;background:linear-gradient(90deg,var(--violet),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent; }
+  .loading-bar { width:160px;height:2px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden; }
+  .loading-fill { height:100%;width:0;background:linear-gradient(90deg,var(--violet),var(--cyan));border-radius:2px;animation:loadFill 1.5s ease-in-out forwards; }
+  @keyframes loadFill { to { width:100%; } }
+
+  /* RESPONSIVE */
+  @media (max-width:900px) {
+    .hero-grid,.about-grid,.contact-grid { grid-template-columns:1fr; }
+    .hero-avatar-wrap { order:-1; }
+    .hero-avatar { width:220px;height:220px; }
+    .nav-links { display:none; }
+    .hamburger { display:flex; }
+    .projects-grid { grid-template-columns:1fr; }
+  }
+  @media (max-width:600px) {
+    .container { padding:0 1rem; }
+    .stat-grid { grid-template-columns:1fr; }
+    section { padding:4rem 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading">
+  <div class="loading-logo">P.</div>
+  <div class="loading-bar"><div class="loading-fill"></div></div>
+</div>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Changes saved successfully!</div>
+
+<!-- ADMIN LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal" style="position:relative">
+    <button class="modal-close" onclick="closeLogin()">✕</button>
+    <div style="font-size:2rem;margin-bottom:1rem">🔐</div>
+    <div class="modal-title">Admin Access</div>
+    <div class="modal-sub">Sign in to edit your portfolio</div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <input class="form-input" type="email" id="adminEmail" placeholder="Email address">
+      <input class="form-input" type="password" id="adminPass" placeholder="Password">
+      <div class="error-msg" id="loginError">Invalid credentials. Try admin@prithiksha.com / admin123</div>
+      <button class="btn-primary" onclick="attemptLogin()" style="justify-content:center;width:100%">Sign In →</button>
+      <div style="font-size:0.75rem;color:var(--text-muted);text-align:center">Demo: admin@prithiksha.com / admin123</div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN TOOLBAR -->
+<div class="admin-bar hidden" id="adminBar">
+  <span class="admin-label">✦ Edit Mode</span>
+  <button class="btn-save" onclick="saveChanges()">💾 Save Changes</button>
+  <button class="btn-logout" onclick="logoutAdmin()">Sign Out</button>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a class="nav-logo" href="#">P.</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-theme" onclick="toggleTheme()" id="themeBtn">☀ Light</button>
+    <button class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg">
+    <div class="hero-blob blob1"></div>
+    <div class="hero-blob blob2"></div>
+  </div>
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content fade-in">
+        <div class="section-label">✦ Welcome to my world</div>
+        <h1 class="hero-name" id="heroName">Prithiksha</h1>
+        <div class="typewriter-wrap">
+          <span class="typewriter" id="typewriter"></span><span class="cursor-blink">|</span>
+        </div>
+        <p class="hero-bio" id="heroBio">I'm a passionate developer and designer crafting elegant digital experiences at the intersection of code and creativity. Always learning, always building.</p>
+        <div class="hero-btns">
+          <a href="#projects" class="btn-primary">Explore My Work ↓</a>
+          <a href="#resume" class="btn-outline">View Resume</a>
+        </div>
+        <div class="socials">
+          <a class="social-icon" href="#" title="GitHub">⌥</a>
+          <a class="social-icon" href="#" title="LinkedIn">in</a>
+          <a class="social-icon" href="#" title="Twitter">𝕏</a>
+          <a class="social-icon" href="#" title="Email">✉</a>
+        </div>
+        <button class="edit-btn" onclick="editSection('hero')">✏ Edit Hero</button>
+      </div>
+      <div class="hero-avatar-wrap fade-in" style="transition-delay:0.2s">
+        <div class="hero-avatar">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Prithiksha&backgroundColor=b6e3f4" alt="Profile" id="profileImg">
+        </div>
+        <div class="hero-badge">Open to Work ✦</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>scroll</span>
+    <div class="scroll-dot"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">✦ Who I Am</div>
+      <h2 class="section-title">About Me <button class="edit-btn" onclick="editAbout()">✏ Edit</button></h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="about-grid fade-in">
+      <div class="about-text">
+        <p id="aboutPara1">Hey! I'm Prithiksha — a Computer Science student with a flair for building sleek, user-centric applications. I thrive at the crossroads of design thinking and engineering precision.</p>
+        <p id="aboutPara2">When I'm not coding, you'll find me sketching UI concepts, exploring the latest in AI/ML research, or contributing to open source. I believe great software is as much about empathy as it is about logic.</p>
+        <p id="aboutPara3">I'm actively seeking internships and opportunities where I can contribute meaningfully, grow rapidly, and build things that matter.</p>
+        <div class="skill-tags" id="aboutTags">
+          <span class="tag">React</span>
+          <span class="tag">TypeScript</span>
+          <span class="tag">Python</span>
+          <span class="tag">UI/UX Design</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">Machine Learning</span>
+          <span class="tag">Figma</span>
+          <span class="tag">AWS</span>
+        </div>
+        <button class="add-btn" onclick="addTag('aboutTags')">+ Add Skill Tag</button>
+      </div>
+      <div>
+        <div class="stat-grid">
+          <div class="stat-card glass-card">
+            <div class="stat-num" id="statProjects">12+</div>
+            <div class="stat-label">Projects Built</div>
+          </div>
+          <div class="stat-card glass-card">
+            <div class="stat-num" id="statIntern">3</div>
+            <div class="stat-label">Internships</div>
+          </div>
+          <div class="stat-card glass-card">
+            <div class="stat-num" id="statCerts">8</div>
+            <div class="stat-label">Certifications</div>
+          </div>
+          <div class="stat-card glass-card">
+            <div class="stat-num" id="statGPA">9.2</div>
+            <div class="stat-label">CGPA</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education" style="padding-top:2rem">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">✦ Academic Journey</div>
+      <h2 class="section-title">Education <button class="edit-btn" onclick="addTimelineItem('educationList','education')">+ Add</button></h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="timeline fade-in" id="educationList">
+      <div class="timeline-item" data-id="edu1">
+        <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:0.5rem">
+          <div>
+            <div class="timeline-title">B.Tech Computer Science & Engineering</div>
+            <div class="timeline-sub">SRM Institute of Science & Technology</div>
+            <div class="timeline-date">2021 – 2025</div>
+          </div>
+          <button class="edit-btn" onclick="editTimelineItem(this.closest('.timeline-item'))">✏ Edit</button>
+        </div>
+        <div class="timeline-desc">Specialization in AI & ML. Dean's List, top 5% of batch. Relevant coursework: Data Structures, OS, DBMS, Machine Learning, Cloud Computing.</div>
+      </div>
+      <div class="timeline-item" data-id="edu2">
+        <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:0.5rem">
+          <div>
+            <div class="timeline-title">Higher Secondary Education (XII)</div>
+            <div class="timeline-sub">DAV Public School, Chennai</div>
+            <div class="timeline-date">2019 – 2021</div>
+          </div>
+          <button class="edit-btn" onclick="editTimelineItem(this.closest('.timeline-item'))">✏ Edit</button>
+        </div>
+        <div class="timeline-desc">Science stream with Computer Science. Scored 96.4%. School topper in Mathematics.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">✦ Work History</div>
+      <h2 class="section-title">Experience <button class="edit-btn" onclick="addTimelineItem('experienceList','experience')">+ Add</button></h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="timeline fade-in" id="experienceList">
+      <div class="timeline-item" data-id="exp1">
+        <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:0.5rem">
+          <div>
+            <div class="timeline-title">Software Engineering Intern</div>
+            <div class="timeline-sub">Zoho Corporation · Chennai</div>
+            <div class="timeline-date">May 2024 – Jul 2024</div>
+          </div>
+          <button class="edit-btn" onclick="editTimelineItem(this.closest('.timeline-item'))">✏ Edit</button>
+        </div>
+        <div class="timeline-desc">Built internal tooling for the Zoho Analytics platform using React and Python. Reduced dashboard load time by 40% through optimized data fetching strategies.</div>
+      </div>
+      <div class="timeline-item" data-id="exp2">
+        <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:0.5rem">
+          <div>
+            <div class="timeline-title">ML Research Intern</div>
+            <div class="timeline-sub">IIT Madras · Research Park</div>
+            <div class="timeline-date">Dec 2023 – Feb 2024</div>
+          </div>
+          <button class="edit-btn" onclick="editTimelineItem(this.closest('.timeline-item'))">✏ Edit</button>
+        </div>
+        <div class="timeline-desc">Worked on NLP models for Tamil language processing. Contributed to dataset curation and fine-tuned BERT variants for sentiment analysis.</div>
+      </div>
+      <div class="timeline-item" data-id="exp3">
+        <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:0.5rem">
+          <div>
+            <div class="timeline-title">Frontend Developer (Part-time)</div>
+            <div class="timeline-sub">Startup — Stealth Mode</div>
+            <div class="timeline-date">Aug 2023 – Nov 2023</div>
+          </div>
+          <button class="edit-btn" onclick="editTimelineItem(this.closest('.timeline-item'))">✏ Edit</button>
+        </div>
+        <div class="timeline-desc">Developed the entire frontend for a B2B SaaS product using Next.js and Tailwind CSS. Implemented complex data visualization components.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">✦ What I've Built</div>
+      <h2 class="section-title">Projects <button class="edit-btn" onclick="addProject()">+ Add Project</button></h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="projects-grid fade-in" id="projectsGrid">
+
+      <div class="project-card" data-id="proj1">
+        <div class="project-thumb-placeholder">🤖</div>
+        <div class="project-body">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div class="project-title">AI Study Companion</div>
+            <button class="edit-btn" onclick="editProject(this.closest('.project-card'))">✏</button>
+          </div>
+          <div class="project-desc">A smart study assistant powered by LLMs that generates practice questions, summarizes notes, and tracks learning progress across subjects.</div>
+          <div class="project-tags">
+            <span class="project-tag">React</span>
+            <span class="project-tag">OpenAI API</span>
+            <span class="project-tag">FastAPI</span>
+            <span class="project-tag">PostgreSQL</span>
+          </div>
+          <div class="project-learned">
+            <strong>What I Learned</strong>
+            Prompt engineering for educational contexts, RAG architecture, vector embeddings, and building real-time streaming interfaces.
+          </div>
+          <div class="project-links">
+            <a href="#" class="project-link">⌥ GitHub</a>
+            <a href="#" class="project-link">↗ Live Demo</a>
+            <a href="#" class="project-link">📄 Report</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card" data-id="proj2">
+        <div class="project-thumb-placeholder">🛒</div>
+        <div class="project-body">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div class="project-title">EcoMart — Green Commerce</div>
+            <button class="edit-btn" onclick="editProject(this.closest('.project-card'))">✏</button>
+          </div>
+          <div class="project-desc">Full-stack e-commerce platform for eco-friendly products with carbon footprint tracker, gamified sustainability scores, and recommendation engine.</div>
+          <div class="project-tags">
+            <span class="project-tag">Next.js</span>
+            <span class="project-tag">MongoDB</span>
+            <span class="project-tag">Stripe</span>
+            <span class="project-tag">TailwindCSS</span>
+          </div>
+          <div class="project-learned">
+            <strong>What I Learned</strong>
+            Payment gateway integration, SSR vs CSR trade-offs, product recommendation algorithms, and sustainable UX design patterns.
+          </div>
+          <div class="project-links">
+            <a href="#" class="project-link">⌥ GitHub</a>
+            <a href="#" class="project-link">↗ Live Demo</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card" data-id="proj3">
+        <div class="project-thumb-placeholder">🧠</div>
+        <div class="project-body">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div class="project-title">Tamil Sentiment Analyzer</div>
+            <button class="edit-btn" onclick="editProject(this.closest('.project-card'))">✏</button>
+          </div>
+          <div class="project-desc">NLP model for Tamil text sentiment classification achieving 87% accuracy. Includes a web interface for real-time analysis of social media data.</div>
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">BERT</span>
+            <span class="project-tag">Flask</span>
+            <span class="project-tag">HuggingFace</span>
+          </div>
+          <div class="project-learned">
+            <strong>What I Learned</strong>
+            Transfer learning for low-resource languages, data augmentation techniques, and deploying ML models to production with optimized inference.
+          </div>
+          <div class="project-links">
+            <a href="#" class="project-link">⌥ GitHub</a>
+            <a href="#" class="project-link">📄 Paper</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <button class="add-btn" style="max-width:400px;margin:1.5rem auto;display:none" id="addProjectBtn" onclick="addProject()">+ Add New Project</button>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">✦ Recognition</div>
+      <h2 class="section-title">Achievements & Certs <button class="edit-btn" onclick="addAchievement()">+ Add</button></h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="achievements-grid fade-in" id="achievementsGrid">
+      <div class="achievement-card">
+        <div class="ach-icon">🏆</div>
+        <div class="ach-title">Smart India Hackathon Winner</div>
+        <div class="ach-issuer">Ministry of Education, India</div>
+        <div class="ach-date">September 2023</div>
+        <a href="#" class="ach-link">View Certificate →</a>
+        <button class="edit-btn" style="display:none;margin-top:0.5rem" onclick="editAchievement(this.closest('.achievement-card'))">✏ Edit</button>
+      </div>
+      <div class="achievement-card">
+        <div class="ach-icon">☁</div>
+        <div class="ach-title">AWS Solutions Architect Associate</div>
+        <div class="ach-issuer">Amazon Web Services</div>
+        <div class="ach-date">March 2024</div>
+        <a href="#" class="ach-link">View Certificate →</a>
+        <button class="edit-btn" style="display:none;margin-top:0.5rem" onclick="editAchievement(this.closest('.achievement-card'))">✏ Edit</button>
+      </div>
+      <div class="achievement-card">
+        <div class="ach-icon">🤖</div>
+        <div class="ach-title">Deep Learning Specialization</div>
+        <div class="ach-issuer">deeplearning.ai · Coursera</div>
+        <div class="ach-date">December 2023</div>
+        <a href="#" class="ach-link">View Certificate →</a>
+        <button class="edit-btn" style="display:none;margin-top:0.5rem" onclick="editAchievement(this.closest('.achievement-card'))">✏ Edit</button>
+      </div>
+      <div class="achievement-card">
+        <div class="ach-icon">💡</div>
+        <div class="ach-title">2nd Place — HackCBS 6.0</div>
+        <div class="ach-issuer">Shaheed Sukhdev College</div>
+        <div class="ach-date">October 2023</div>
+        <a href="#" class="ach-link">View Certificate →</a>
+        <button class="edit-btn" style="display:none;margin-top:0.5rem" onclick="editAchievement(this.closest('.achievement-card'))">✏ Edit</button>
+      </div>
+    </div>
+    <button class="add-btn" onclick="addAchievement()">+ Add Achievement</button>
+  </div>
+</section>
+
+<!-- HOBBIES -->
+<section id="hobbies">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">✦ Beyond the Screen</div>
+      <h2 class="section-title">Hobbies & Interests <button class="edit-btn" onclick="addHobby()">+ Add</button></h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="hobbies-grid fade-in" id="hobbiesGrid">
+      <div class="hobby-card">
+        <div class="hobby-icon">🎨</div>
+        <div class="hobby-title">UI/UX Design</div>
+        <div class="hobby-desc">Creating beautiful interfaces on Figma & Adobe XD in my free time</div>
+        <button class="edit-btn" style="display:none;margin-top:0.5rem" onclick="editHobby(this.closest('.hobby-card'))">✏</button>
+      </div>
+      <div class="hobby-card">
+        <div class="hobby-icon">📚</div>
+        <div class="hobby-title">Technical Writing</div>
+        <div class="hobby-desc">Blogging about AI, web dev and software engineering on Medium</div>
+        <button class="edit-btn" style="display:none;margin-top:0.5rem" onclick="editHobby(this.closest('.hobby-card'))">✏</button>
+      </div>
+      <div class="hobby-card">
+        <div class="hobby-icon">🎵</div>
+        <div class="hobby-title">Music Production</div>
+        <div class="hobby-desc">Experimenting with electronic music and Carnatic fusion compositions</div>
+        <button class="edit-btn" style="display:none;margin-top:0.5rem" onclick="editHobby(this.closest('.hobby-card'))">✏</button>
+      </div>
+      <div class="hobby-card">
+        <div class="hobby-icon">🧩</div>
+        <div class="hobby-title">Competitive Programming</div>
+        <div class="hobby-desc">Codeforces Expert, Leetcode 1900+ rating, love problem solving</div>
+        <button class="edit-btn" style="display:none;margin-top:0.5rem" onclick="editHobby(this.closest('.hobby-card'))">✏</button>
+      </div>
+    </div>
+    <button class="add-btn" onclick="addHobby()">+ Add Hobby</button>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">✦ My Toolkit</div>
+      <h2 class="section-title">Skills <button class="edit-btn" onclick="addSkillCategory()">+ Add Category</button></h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="skills-grid fade-in" id="skillsGrid">
+      <div class="skill-cat">
+        <div class="skill-cat-title">🖥 Frontend</div>
+        <div class="skill-tags">
+          <span class="tag">React</span><span class="tag">Next.js</span>
+          <span class="tag">TypeScript</span><span class="tag">Tailwind CSS</span>
+          <span class="tag">Figma</span><span class="tag">HTML5 / CSS3</span>
+        </div>
+        <button class="add-btn" onclick="addTag(this.previousElementSibling)" style="margin-top:0.75rem">+ Skill</button>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-cat-title">⚙ Backend</div>
+        <div class="skill-tags">
+          <span class="tag">Python</span><span class="tag">FastAPI</span>
+          <span class="tag">Node.js</span><span class="tag">PostgreSQL</span>
+          <span class="tag">MongoDB</span><span class="tag">Redis</span>
+        </div>
+        <button class="add-btn" onclick="addTag(this.previousElementSibling)" style="margin-top:0.75rem">+ Skill</button>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-cat-title">🤖 AI / ML</div>
+        <div class="skill-tags">
+          <span class="tag">PyTorch</span><span class="tag">TensorFlow</span>
+          <span class="tag">Scikit-learn</span><span class="tag">HuggingFace</span>
+          <span class="tag">LangChain</span><span class="tag">OpenCV</span>
+        </div>
+        <button class="add-btn" onclick="addTag(this.previousElementSibling)" style="margin-top:0.75rem">+ Skill</button>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-cat-title">☁ Cloud & DevOps</div>
+        <div class="skill-tags">
+          <span class="tag">AWS</span><span class="tag">Docker</span>
+          <span class="tag">GitHub Actions</span><span class="tag">Vercel</span>
+          <span class="tag">Linux</span><span class="tag">Terraform</span>
+        </div>
+        <button class="add-btn" onclick="addTag(this.previousElementSibling)" style="margin-top:0.75rem">+ Skill</button>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-cat-title">💬 Soft Skills</div>
+        <div class="skill-tags">
+          <span class="tag">Leadership</span><span class="tag">Communication</span>
+          <span class="tag">Problem Solving</span><span class="tag">Teamwork</span>
+          <span class="tag">Adaptability</span>
+        </div>
+        <button class="add-btn" onclick="addTag(this.previousElementSibling)" style="margin-top:0.75rem">+ Skill</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESUME -->
+<section id="resume">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">✦ Download</div>
+      <h2 class="section-title">Resume</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="resume-box fade-in">
+      <div class="resume-icon">📄</div>
+      <h3 style="font-family:'Syne',sans-serif;font-size:1.3rem;margin-bottom:0.5rem">Prithiksha's Resume</h3>
+      <p style="color:var(--text-muted);max-width:400px;margin:0 auto">Full-stack Developer & ML Enthusiast · B.Tech CSE · SRM IST · 2025</p>
+      <div class="resume-btns">
+        <a href="#" class="btn-primary" id="viewResumeBtn">👁 View Resume</a>
+        <a href="#" class="btn-outline" id="downloadResumeBtn">↓ Download PDF</a>
+      </div>
+      <div style="margin-top:1.5rem">
+        <label class="add-btn" style="display:none;cursor:pointer;max-width:300px;margin:0 auto" id="uploadResumeBtn">
+          📤 Upload New Resume (PDF)
+          <input type="file" accept=".pdf" style="display:none" onchange="uploadResume(this)">
+        </label>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">✦ Let's Connect</div>
+      <h2 class="section-title">Get In Touch</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="contact-grid fade-in">
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="contact-icon">✉</div>
+          <div>
+            <div class="contact-label">Email</div>
+            <div class="contact-val" id="contactEmail">prithiksha@example.com</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📱</div>
+          <div>
+            <div class="contact-label">Phone</div>
+            <div class="contact-val" id="contactPhone">+91 98765 43210</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <div>
+            <div class="contact-label">Location</div>
+            <div class="contact-val">Chennai, Tamil Nadu, India</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">💼</div>
+          <div>
+            <div class="contact-label">LinkedIn</div>
+            <div class="contact-val"><a href="#" style="color:var(--cyan);text-decoration:none">linkedin.com/in/prithiksha</a></div>
+          </div>
+        </div>
+        <button class="edit-btn" onclick="editContact()" style="width:fit-content">✏ Edit Contact Info</button>
+      </div>
+      <div>
+        <div class="glass-card">
+          <h3 style="font-family:'Syne',sans-serif;margin-bottom:1.5rem;font-size:1.1rem">Send a Message</h3>
+          <div class="contact-form">
+            <input class="form-input" type="text" placeholder="Your Name">
+            <input class="form-input" type="email" placeholder="Your Email">
+            <input class="form-input" type="text" placeholder="Subject">
+            <textarea class="form-input" placeholder="Your message..."></textarea>
+            <button class="btn-primary" onclick="sendMessage(this)" style="justify-content:center">Send Message ✦</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p style="margin-bottom:0.5rem">Designed & Built with ♥ by <strong>Prithiksha</strong></p>
+  <p style="font-size:0.8rem">© 2025 · All rights reserved</p>
+  <p style="margin-top:1rem">
+    <a href="#" class="footer-admin-link" onclick="openLogin();return false;">⚙ Admin</a>
+  </p>
+</footer>
+
+<!-- EDIT MODALS -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal" style="position:relative;max-width:500px;max-height:85vh;overflow-y:auto">
+    <button class="modal-close" onclick="closeEditModal()">✕</button>
+    <div id="editModalContent"></div>
+  </div>
+</div>
+
+<script>
+// ======= STATE =======
+const ADMIN_EMAIL = 'admin@prithiksha.com';
+const ADMIN_PASS = 'admin123';
+let isAdmin = false;
+
+// ======= LOADING =======
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const l = document.getElementById('loading');
+    l.style.opacity = '0';
+    l.style.transition = 'opacity 0.5s';
+    setTimeout(() => l.style.display='none', 500);
+    startTypewriter();
+    initScrollAnimations();
+  }, 1600);
+});
+
+// ======= CURSOR =======
+const dot = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+document.addEventListener('mousemove', e => {
+  dot.style.left = e.clientX + 'px';
+  dot.style.top = e.clientY + 'px';
+  setTimeout(() => {
+    ring.style.left = e.clientX + 'px';
+    ring.style.top = e.clientY + 'px';
+  }, 80);
+});
+
+// ======= TYPEWRITER =======
+const phrases = [
+  'Full-Stack Developer',
+  'ML Enthusiast',
+  'UI/UX Designer',
+  'Open Source Contributor',
+  'Problem Solver'
+];
+let pi = 0, ci = 0, deleting = false;
+function startTypewriter() {
+  const el = document.getElementById('typewriter');
+  if (!el) return;
+  function tick() {
+    const phrase = phrases[pi];
+    el.textContent = deleting ? phrase.substring(0, ci--) : phrase.substring(0, ci++);
+    if (!deleting && ci > phrase.length) { deleting = true; setTimeout(tick, 1800); return; }
+    if (deleting && ci < 0) { deleting = false; pi = (pi+1) % phrases.length; ci = 0; setTimeout(tick, 400); return; }
+    setTimeout(tick, deleting ? 60 : 90);
+  }
+  tick();
+}
+
+// ======= SCROLL ANIMATIONS =======
+function initScrollAnimations() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+}
+
+// ======= THEME =======
+function toggleTheme() {
+  document.body.classList.toggle('light-mode');
+  const btn = document.getElementById('themeBtn');
+  btn.textContent = document.body.classList.contains('light-mode') ? '🌙 Dark' : '☀ Light';
+}
+
+// ======= ADMIN AUTH =======
+function openLogin() {
+  document.getElementById('loginModal').classList.add('active');
+}
+function closeLogin() {
+  document.getElementById('loginModal').classList.remove('active');
+  document.getElementById('loginError').style.display = 'none';
+}
+function attemptLogin() {
+  const email = document.getElementById('adminEmail').value;
+  const pass = document.getElementById('adminPass').value;
+  if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
+    isAdmin = true;
+    document.body.classList.add('admin-mode');
+    document.getElementById('adminBar').classList.remove('hidden');
+    document.querySelectorAll('.achievement-card .edit-btn, .hobby-card .edit-btn').forEach(b => b.style.display='inline-flex');
+    document.getElementById('uploadResumeBtn').style.display='block';
+    document.getElementById('addProjectBtn').style.display='block';
+    closeLogin();
+    showToast('Welcome back, Admin! ✦');
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+function logoutAdmin() {
+  isAdmin = false;
+  document.body.classList.remove('admin-mode');
+  document.getElementById('adminBar').classList.add('hidden');
+  document.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+  showToast('Signed out successfully');
+}
+
+// ======= SAVE =======
+function saveChanges() {
+  showToast('✓ Changes saved successfully!');
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ======= EDIT MODAL =======
+function openEditModal(html) {
+  document.getElementById('editModalContent').innerHTML = html;
+  document.getElementById('editModal').classList.add('active');
+}
+function closeEditModal() {
+  document.getElementById('editModal').classList.remove('active');
+}
+
+// ======= EDIT HERO =======
+function editSection(sec) {
+  if (sec === 'hero') {
+    const name = document.getElementById('heroName').textContent;
+    const bio = document.getElementById('heroBio').textContent;
+    openEditModal(`
+      <div class="modal-title" style="margin-bottom:1.5rem">Edit Hero</div>
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <label style="font-size:0.8rem;color:var(--text-muted)">Name</label>
+        <input class="form-input" id="ei_name" value="${name}">
+        <label style="font-size:0.8rem;color:var(--text-muted)">Bio</label>
+        <textarea class="form-input" id="ei_bio">${bio}</textarea>
+        <button class="btn-primary" onclick="applyHeroEdit()" style="justify-content:center">Apply Changes</button>
+      </div>
+    `);
+  }
+}
+function applyHeroEdit() {
+  document.getElementById('heroName').textContent = document.getElementById('ei_name').value;
+  document.getElementById('heroBio').textContent = document.getElementById('ei_bio').value;
+  closeEditModal(); showToast('Hero section updated!');
+}
+
+// ======= EDIT ABOUT =======
+function editAbout() {
+  const p1 = document.getElementById('aboutPara1').textContent;
+  const p2 = document.getElementById('aboutPara2').textContent;
+  openEditModal(`
+    <div class="modal-title" style="margin-bottom:1.5rem">Edit About</div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <label style="font-size:0.8rem;color:var(--text-muted)">Paragraph 1</label>
+      <textarea class="form-input" id="ei_p1">${p1}</textarea>
+      <label style="font-size:0.8rem;color:var(--text-muted)">Paragraph 2</label>
+      <textarea class="form-input" id="ei_p2">${p2}</textarea>
+      <button class="btn-primary" onclick="applyAboutEdit()" style="justify-content:center">Apply</button>
+    </div>
+  `);
+}
+function applyAboutEdit() {
+  document.getElementById('aboutPara1').textContent = document.getElementById('ei_p1').value;
+  document.getElementById('aboutPara2').textContent = document.getElementById('ei_p2').value;
+  closeEditModal(); showToast('About updated!');
+}
+
+// ======= TAGS =======
+function addTag(container) {
+  if (typeof container === 'string') container = document.getElementById(container);
+  const name = prompt('Enter skill name:');
+  if (!name) return;
+  const tag = document.createElement('span');
+  tag.className = 'tag';
+  tag.textContent = name;
+  if (isAdmin) {
+    tag.addEventListener('dblclick', () => { if (confirm('Remove tag?')) tag.remove(); });
+    tag.title = 'Double-click to remove';
+  }
+  container.appendChild(tag);
+  showToast('Tag added!');
+}
+
+// ======= TIMELINE =======
+function addTimelineItem(listId, type) {
+  openEditModal(`
+    <div class="modal-title" style="margin-bottom:1.5rem">Add ${type === 'education' ? 'Education' : 'Experience'}</div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <input class="form-input" id="ti_title" placeholder="Title / Degree / Role">
+      <input class="form-input" id="ti_sub" placeholder="${type === 'education' ? 'Institution' : 'Company & Location'}">
+      <input class="form-input" id="ti_date" placeholder="Duration (e.g. 2022 – 2024)">
+      <textarea class="form-input" id="ti_desc" placeholder="Description..."></textarea>
+      <button class="btn-primary" onclick="applyAddTimeline('${listId}')" style="justify-content:center">Add Entry</button>
+    </div>
+  `);
+}
+function applyAddTimeline(listId) {
+  const list = document.getElementById(listId);
+  const id = 'item_' + Date.now();
+  const div = document.createElement('div');
+  div.className = 'timeline-item';
+  div.dataset.id = id;
+  div.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:0.5rem">
+      <div>
+        <div class="timeline-title">${document.getElementById('ti_title').value}</div>
+        <div class="timeline-sub">${document.getElementById('ti_sub').value}</div>
+        <div class="timeline-date">${document.getElementById('ti_date').value}</div>
+      </div>
+      <div style="display:flex;gap:0.5rem">
+        <button class="edit-btn" onclick="editTimelineItem(this.closest('.timeline-item'))">✏ Edit</button>
+        <button class="edit-btn" style="color:#F87171;border-color:rgba(248,113,113,0.3)" onclick="if(confirm('Remove?'))this.closest('.timeline-item').remove()">✕</button>
+      </div>
+    </div>
+    <div class="timeline-desc">${document.getElementById('ti_desc').value}</div>
+  `;
+  list.appendChild(div);
+  closeEditModal(); showToast('Entry added!');
+}
+function editTimelineItem(item) {
+  const title = item.querySelector('.timeline-title').textContent;
+  const sub = item.querySelector('.timeline-sub').textContent;
+  const date = item.querySelector('.timeline-date').textContent;
+  const desc = item.querySelector('.timeline-desc').textContent;
+  openEditModal(`
+    <div class="modal-title" style="margin-bottom:1.5rem">Edit Entry</div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <input class="form-input" id="et_title" value="${title}">
+      <input class="form-input" id="et_sub" value="${sub}">
+      <input class="form-input" id="et_date" value="${date}">
+      <textarea class="form-input" id="et_desc">${desc}</textarea>
+      <div style="display:flex;gap:0.75rem">
+        <button class="btn-primary" onclick="applyEditTimeline()" style="justify-content:center;flex:1">Save</button>
+        <button class="btn-outline" onclick="if(confirm('Delete?')){currentEditItem.remove();closeEditModal();showToast('Removed');}" style="border-color:rgba(248,113,113,0.3);color:#F87171">Delete</button>
+      </div>
+    </div>
+  `);
+  window.currentEditItem = item;
+}
+function applyEditTimeline() {
+  const item = window.currentEditItem;
+  item.querySelector('.timeline-title').textContent = document.getElementById('et_title').value;
+  item.querySelector('.timeline-sub').textContent = document.getElementById('et_sub').value;
+  item.querySelector('.timeline-date').textContent = document.getElementById('et_date').value;
+  item.querySelector('.timeline-desc').textContent = document.getElementById('et_desc').value;
+  closeEditModal(); showToast('Entry updated!');
+}
+
+// ======= PROJECTS =======
+function addProject() {
+  openEditModal(`
+    <div class="modal-title" style="margin-bottom:1.5rem">Add Project</div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <input class="form-input" id="pj_title" placeholder="Project Title">
+      <textarea class="form-input" id="pj_desc" placeholder="Description..."></textarea>
+      <input class="form-input" id="pj_tags" placeholder="Skills (comma separated)">
+      <textarea class="form-input" id="pj_learned" placeholder="What I learned..."></textarea>
+      <input class="form-input" id="pj_gh" placeholder="GitHub URL">
+      <input class="form-input" id="pj_demo" placeholder="Live Demo URL">
+      <input class="form-input" id="pj_emoji" placeholder="Icon emoji (e.g. 🚀)">
+      <button class="btn-primary" onclick="applyAddProject()" style="justify-content:center">Add Project</button>
+    </div>
+  `);
+}
+function applyAddProject() {
+  const title = document.getElementById('pj_title').value;
+  const desc = document.getElementById('pj_desc').value;
+  const tagsRaw = document.getElementById('pj_tags').value;
+  const learned = document.getElementById('pj_learned').value;
+  const gh = document.getElementById('pj_gh').value;
+  const demo = document.getElementById('pj_demo').value;
+  const emoji = document.getElementById('pj_emoji').value || '✨';
+  const tags = tagsRaw.split(',').map(t => `<span class="project-tag">${t.trim()}</span>`).join('');
+  const id = 'proj_' + Date.now();
+  const div = document.createElement('div');
+  div.className = 'project-card';
+  div.dataset.id = id;
+  div.innerHTML = `
+    <div class="project-thumb-placeholder">${emoji}</div>
+    <div class="project-body">
+      <div style="display:flex;justify-content:space-between;align-items:start">
+        <div class="project-title">${title}</div>
+        <button class="edit-btn" onclick="editProject(this.closest('.project-card'))">✏</button>
+      </div>
+      <div class="project-desc">${desc}</div>
+      <div class="project-tags">${tags}</div>
+      ${learned ? `<div class="project-learned"><strong>What I Learned</strong>${learned}</div>` : ''}
+      <div class="project-links">
+        ${gh ? `<a href="${gh}" class="project-link">⌥ GitHub</a>` : ''}
+        ${demo ? `<a href="${demo}" class="project-link">↗ Live Demo</a>` : ''}
+      </div>
+    </div>
+  `;
+  document.getElementById('projectsGrid').appendChild(div);
+  closeEditModal(); showToast('Project added!');
+}
+function editProject(card) {
+  const title = card.querySelector('.project-title').textContent;
+  const desc = card.querySelector('.project-desc').textContent;
+  const learned = card.querySelector('.project-learned') ? card.querySelector('.project-learned').textContent.replace('What I Learned','').trim() : '';
+  openEditModal(`
+    <div class="modal-title" style="margin-bottom:1.5rem">Edit Project</div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <input class="form-input" id="ep_title" value="${title}">
+      <textarea class="form-input" id="ep_desc">${desc}</textarea>
+      <textarea class="form-input" id="ep_learned">${learned}</textarea>
+      <div style="display:flex;gap:0.75rem">
+        <button class="btn-primary" onclick="applyEditProject()" style="flex:1;justify-content:center">Save</button>
+        <button class="btn-outline" onclick="if(confirm('Delete project?')){currentEditItem.remove();closeEditModal();showToast('Project removed')}" style="border-color:rgba(248,113,113,0.3);color:#F87171">Delete</button>
+      </div>
+    </div>
+  `);
+  window.currentEditItem = card;
+}
+function applyEditProject() {
+  const card = window.currentEditItem;
+  card.querySelector('.project-title').textContent = document.getElementById('ep_title').value;
+  card.querySelector('.project-desc').textContent = document.getElementById('ep_desc').value;
+  if (card.querySelector('.project-learned')) {
+    const learnedEl = card.querySelector('.project-learned');
+    learnedEl.innerHTML = `<strong>What I Learned</strong>${document.getElementById('ep_learned').value}`;
+  }
+  closeEditModal(); showToast('Project updated!');
+}
+
+// ======= ACHIEVEMENTS =======
+function addAchievement() {
+  openEditModal(`
+    <div class="modal-title" style="margin-bottom:1.5rem">Add Achievement</div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <input class="form-input" id="ac_icon" placeholder="Emoji icon (e.g. 🏆)">
+      <input class="form-input" id="ac_title" placeholder="Title">
+      <input class="form-input" id="ac_issuer" placeholder="Issuer / Organization">
+      <input class="form-input" id="ac_date" placeholder="Date">
+      <input class="form-input" id="ac_link" placeholder="Certificate URL (optional)">
+      <button class="btn-primary" onclick="applyAddAchievement()" style="justify-content:center">Add</button>
+    </div>
+  `);
+}
+function applyAddAchievement() {
+  const icon = document.getElementById('ac_icon').value || '🎖';
+  const title = document.getElementById('ac_title').value;
+  const issuer = document.getElementById('ac_issuer').value;
+  const date = document.getElementById('ac_date').value;
+  const link = document.getElementById('ac_link').value;
+  const div = document.createElement('div');
+  div.className = 'achievement-card';
+  div.innerHTML = `
+    <div class="ach-icon">${icon}</div>
+    <div class="ach-title">${title}</div>
+    <div class="ach-issuer">${issuer}</div>
+    <div class="ach-date">${date}</div>
+    ${link ? `<a href="${link}" class="ach-link">View Certificate →</a>` : ''}
+    <button class="edit-btn" style="display:inline-flex;margin-top:0.5rem" onclick="editAchievement(this.closest('.achievement-card'))">✏ Edit</button>
+  `;
+  document.getElementById('achievementsGrid').appendChild(div);
+  closeEditModal(); showToast('Achievement added!');
+}
+function editAchievement(card) {
+  openEditModal(`
+    <div class="modal-title" style="margin-bottom:1.5rem">Edit Achievement</div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <input class="form-input" id="ea_icon" value="${card.querySelector('.ach-icon').textContent}">
+      <input class="form-input" id="ea_title" value="${card.querySelector('.ach-title').textContent}">
+      <input class="form-input" id="ea_issuer" value="${card.querySelector('.ach-issuer').textContent}">
+      <input class="form-input" id="ea_date" value="${card.querySelector('.ach-date').textContent}">
+      <div style="display:flex;gap:0.75rem">
+        <button class="btn-primary" onclick="applyEditAchievement()" style="flex:1;justify-content:center">Save</button>
+        <button class="btn-outline" onclick="if(confirm('Delete?')){currentEditItem.remove();closeEditModal();showToast('Removed')}" style="border-color:rgba(248,113,113,0.3);color:#F87171">Delete</button>
+      </div>
+    </div>
+  `);
+  window.currentEditItem = card;
+}
+function applyEditAchievement() {
+  const c = window.currentEditItem;
+  c.querySelector('.ach-icon').textContent = document.getElementById('ea_icon').value;
+  c.querySelector('.ach-title').textContent = document.getElementById('ea_title').value;
+  c.querySelector('.ach-issuer').textContent = document.getElementById('ea_issuer').value;
+  c.querySelector('.ach-date').textContent = document.getElementById('ea_date').value;
+  closeEditModal(); showToast('Updated!');
+}
+
+// ======= HOBBIES =======
+function addHobby() {
+  openEditModal(`
+    <div class="modal-title" style="margin-bottom:1.5rem">Add Hobby</div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <input class="form-input" id="hb_icon" placeholder="Emoji (e.g. 🎸)">
+      <input class="form-input" id="hb_title" placeholder="Title">
+      <textarea class="form-input" id="hb_desc" placeholder="Short description..."></textarea>
+      <button class="btn-primary" onclick="applyAddHobby()" style="justify-content:center">Add</button>
+    </div>
+  `);
+}
+function applyAddHobby() {
+  const icon = document.getElementById('hb_icon').value || '⭐';
+  const title = document.getElementById('hb_title').value;
+  const desc = document.getElementById('hb_desc').value;
+  const div = document.createElement('div');
+  div.className = 'hobby-card';
+  div.innerHTML = `
+    <div class="hobby-icon">${icon}</div>
+    <div class="hobby-title">${title}</div>
+    <div class="hobby-desc">${desc}</div>
+    <button class="edit-btn" style="display:inline-flex;margin-top:0.5rem" onclick="editHobby(this.closest('.hobby-card'))">✏</button>
+  `;
+  document.getElementById('hobbiesGrid').appendChild(div);
+  closeEditModal(); showToast('Hobby added!');
+}
+function editHobby(card) {
+  openEditModal(`
+    <div class="modal-title" style="margin-bottom:1.5rem">Edit Hobby</div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <input class="form-input" id="eh_icon" value="${card.querySelector('.hobby-icon').textContent}">
+      <input class="form-input" id="eh_title" value="${card.querySelector('.hobby-title').textContent}">
+      <textarea class="form-input" id="eh_desc">${card.querySelector('.hobby-desc').textContent}</textarea>
+      <div style="display:flex;gap:0.75rem">
+        <button class="btn-primary" onclick="applyEditHobby()" style="flex:1;justify-content:center">Save</button>
+        <button class="btn-outline" onclick="if(confirm('Remove?')){currentEditItem.remove();closeEditModal();showToast('Removed')}" style="border-color:rgba(248,113,113,0.3);color:#F87171">Delete</button>
+      </div>
+    </div>
+  `);
+  window.currentEditItem = card;
+}
+function applyEditHobby() {
+  const c = window.currentEditItem;
+  c.querySelector('.hobby-icon').textContent = document.getElementById('eh_icon').value;
+  c.querySelector('.hobby-title').textContent = document.getElementById('eh_title').value;
+  c.querySelector('.hobby-desc').textContent = document.getElementById('eh_desc').value;
+  closeEditModal(); showToast('Updated!');
+}
+
+// ======= CONTACT EDIT =======
+function editContact() {
+  openEditModal(`
+    <div class="modal-title" style="margin-bottom:1.5rem">Edit Contact Info</div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <input class="form-input" id="co_email" value="${document.getElementById('contactEmail').textContent}">
+      <input class="form-input" id="co_phone" value="${document.getElementById('contactPhone').textContent}">
+      <button class="btn-primary" onclick="applyContactEdit()" style="justify-content:center">Save</button>
+    </div>
+  `);
+}
+function applyContactEdit() {
+  document.getElementById('contactEmail').textContent = document.getElementById('co_email').value;
+  document.getElementById('contactPhone').textContent = document.getElementById('co_phone').value;
+  closeEditModal(); showToast('Contact updated!');
+}
+
+// ======= SKILLS =======
+function addSkillCategory() {
+  openEditModal(`
+    <div class="modal-title" style="margin-bottom:1.5rem">Add Skill Category</div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <input class="form-input" id="sc_title" placeholder="Category title (e.g. 🔧 DevOps)">
+      <input class="form-input" id="sc_skills" placeholder="Skills (comma separated)">
+      <button class="btn-primary" onclick="applyAddSkillCat()" style="justify-content:center">Add</button>
+    </div>
+  `);
+}
+function applyAddSkillCat() {
+  const title = document.getElementById('sc_title').value;
+  const skills = document.getElementById('sc_skills').value.split(',').map(s => `<span class="tag">${s.trim()}</span>`).join('');
+  const div = document.createElement('div');
+  div.className = 'skill-cat';
+  div.innerHTML = `
+    <div class="skill-cat-title">${title}</div>
+    <div class="skill-tags">${skills}</div>
+    <button class="add-btn" onclick="addTag(this.previousElementSibling)" style="margin-top:0.75rem">+ Skill</button>
+  `;
+  document.getElementById('skillsGrid').appendChild(div);
+  closeEditModal(); showToast('Category added!');
+}
+
+// ======= RESUME UPLOAD =======
+function uploadResume(input) {
+  if (input.files[0]) {
+    const url = URL.createObjectURL(input.files[0]);
+    document.getElementById('viewResumeBtn').href = url;
+    document.getElementById('downloadResumeBtn').href = url;
+    document.getElementById('downloadResumeBtn').download = 'Prithiksha_Resume.pdf';
+    showToast('Resume uploaded!');
+  }
+}
+
+// ======= SEND MESSAGE =======
+function sendMessage(btn) {
+  btn.textContent = '✓ Message Sent!';
+  btn.style.background = 'linear-gradient(135deg,#10B981,#34D399)';
+  setTimeout(() => {
+    btn.textContent = 'Send Message ✦';
+    btn.style.background = '';
+  }, 3000);
+}
+
+// ======= KEYBOARD SHORTCUT =======
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.shiftKey && e.key === 'A') openLogin();
+});
+
+// ======= CLOSE MODALS ON OUTSIDE CLICK =======
+document.getElementById('loginModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('loginModal')) closeLogin();
+});
+document.getElementById('editModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('editModal')) closeEditModal();
+});
+
+// ======= HERO PARALLAX =======
+document.getElementById('hero').addEventListener('mousemove', e => {
+  const rect = document.getElementById('hero').getBoundingClientRect();
+  const x = (e.clientX - rect.left) / rect.width - 0.5;
+  const y = (e.clientY - rect.top) / rect.height - 0.5;
+  document.querySelector('.blob1').style.transform = `translate(${x*30}px,${y*30}px)`;
+  document.querySelector('.blob2').style.transform = `translate(${-x*20}px,${-y*20}px)`;
+});
+
+// Hamburger toggle (mobile)
+document.getElementById('hamburger').addEventListener('click', () => {
+  const links = document.querySelector('.nav-links');
+  if (links.style.display === 'flex') {
+    links.style.display = 'none';
+  } else {
+    links.style.cssText = 'display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:rgba(15,23,42,0.98);padding:1rem 2rem;gap:1rem;border-bottom:1px solid var(--glass-border);z-index:999';
+  }
+});
+</script>
+</body>
+</html>
