@@ -189,7 +189,8 @@
   html{scroll-behavior:smooth;font-size:16px}
   body{
     font-family:'Outfit',sans-serif;
-    background:var(--ink);
+    background: #F8FAFC !important;
+    color: #0F172A !important;
     color:var(--text);
     overflow-x:hidden;
     line-height:1.6;
@@ -205,7 +206,7 @@
   body::before{
     content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    opacity:0.4;
+    opacity:0.05;
   }
 
   /* ─── LOADING ─── */
@@ -291,7 +292,7 @@
 
   /* ─── GLASS CARD ─── */
   .card{
-    background:var(--glass);
+    background: white !important;
     border:1px solid var(--border);
     border-radius:12px;
     padding:1.75rem;
@@ -317,7 +318,7 @@
   .hero-bg{position:absolute;inset:0;pointer-events:none}
   .orb{
     position:absolute;border-radius:50%;filter:blur(100px);
-    opacity:0.08;animation:orbFloat 10s ease-in-out infinite;
+    opacity:0.03;animation:orbFloat 10s ease-in-out infinite;
   }
   .orb1{width:600px;height:600px;background:radial-gradient(circle,var(--gold),transparent 70%);top:-100px;right:-150px}
   .orb2{width:400px;height:400px;background:radial-gradient(circle,var(--violet),transparent 70%);bottom:0;left:-100px;animation-delay:4s}
