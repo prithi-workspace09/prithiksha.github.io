@@ -1352,23 +1352,25 @@ document.querySelectorAll('.modal-overlay').forEach(m => {
 
 // ═══ AUTH ═══
 async function doLogin() {
-  const email = document.getElementById("loginEmail").value;
-  const password = document.getElementById("loginPass").value;
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPass").value.trim();
 
   const { auth, signInWithEmailAndPassword } = window._firebase;
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    
+
     console.log("Logged in:", userCredential.user);
-    
+
     document.body.classList.add("admin-mode");
     document.getElementById("adminBar").classList.add("show");
     closeModal("loginModal");
 
   } catch (error) {
-    console.log(error.code);
-    console.log(error.message);
+    console.log("ERROR CODE:", error.code);
+    console.log("ERROR MESSAGE:", error.message);
+
+    alert(error.code); // 👈 IMPORTANT: shows real issue
 
     document.getElementById("loginErr").style.display = "block";
   }
