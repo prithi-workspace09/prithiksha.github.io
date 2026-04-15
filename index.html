@@ -37,7 +37,7 @@
       email: "prithikshaks@gmail.com",
       phone: "9994777264",
       linkedin: "https://www.linkedin.com/in/prithikshaks-3139sac",
-      github: "https://github.com/prithi-workspace09"
+      github: "https://github.com/prithi-workspace09",
       location: "Salem, Tamil Nadu"
     },
     education: [
@@ -153,8 +153,8 @@
   };
 
   // Expose to global
-  window._firebase = { auth, db, doc, getDoc, setDoc, signInWithEmailAndPassword, signOut, onAuthStateChanged, onSnapshot, DEFAULT_DATA };
-  window.dispatchEvent(new Event('firebase-ready'));
+  winw._firebase = { auth, db, c, getc, setc, signInWithEmailAndPassword, signOut, onAuthStateChanged, onSnapshot, DEFAULT_DATA };
+  winw.dispatchEvent(new Event('firebase-ready'));
 </script>
 
 <style>
@@ -183,7 +183,7 @@
   --border2: rgba(124,58,237,0.25);
 
   --glow: 0 0 40px rgba(124,58,237,0.15);
-  --shadow: 0 10px 30px rgba(0,0,0,0.08);
+  --shaw: 0 10px 30px rgba(0,0,0,0.08);
 }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth;font-size:16px}
@@ -306,7 +306,7 @@
   }
   .card:hover{
     border-color:var(--border2);
-    box-shadow:var(--glow),var(--shadow);
+    box-shaw:var(--glow),var(--shaw);
     transform:translateY(-3px);
   }
 
@@ -368,9 +368,9 @@
     text-decoration:none;font-weight:600;font-size:0.875rem;
     border:none;cursor:pointer;letter-spacing:0.03em;
     transition:all 0.3s cubic-bezier(.25,.46,.45,.94);
-    box-shadow:0 8px 24px rgba(201,168,76,0.3);
+    box-shaw:0 8px 24px rgba(201,168,76,0.3);
   }
-  .btn-gold:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(201,168,76,0.45)}
+  .btn-gold:hover{transform:translateY(-3px);box-shaw:0 14px 32px rgba(201,168,76,0.45)}
   .btn-ghost{
     display:inline-flex;align-items:center;gap:0.5rem;
     background:transparent;color:var(--text);
@@ -1352,14 +1352,25 @@ document.querySelectorAll('.modal-overlay').forEach(m => {
 
 // ═══ AUTH ═══
 async function doLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass = document.getElementById('loginPass').value;
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPass").value;
+
+  const { auth, signInWithEmailAndPassword } = window._firebase;
+
   try {
-    await FB.signInWithEmailAndPassword(FB.auth, email, pass);
-    closeModal('loginModal');
-    toast('Welcome back, Prithiksha! ◆');
-  } catch(e) {
-    document.getElementById('loginErr').style.display = 'block';
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    
+    console.log("Logged in:", userCredential.user);
+    
+    document.body.classList.add("admin-mode");
+    document.getElementById("adminBar").classList.add("show");
+    closeModal("loginModal");
+
+  } catch (error) {
+    console.log(error.code);
+    console.log(error.message);
+
+    document.getElementById("loginErr").style.display = "block";
   }
 }
 async function doLogout() {
